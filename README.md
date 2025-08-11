@@ -1,38 +1,52 @@
-Role Name
+vector-role
 =========
 
-A brief description of the role goes here.
+Роль выполняет:
+1. установку Vector из архива с дистрибутивом 
+2. первичную конфигурацию Vector с демо конфигурацией по генерации событий syslog и отправку данные в БД Clickhouse
+3. созданию юнита systemd для Vector
+4. создание пользователя ОС для Vector
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+1. Операциооная система на базе Debian
+2. Предустановленная БД Clickhouse.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+`vars/main.yml`:
+Если требуется, можно изменить пользователя ОС владельца По Vector:    
+```yaml
+vector_os_user: "vector"
+vector_os_group: "vector"
+```
 
-Dependencies
-------------
+`defaults/main.yml`:
+Параметры, определяющие версию Vector для установки, архитектуру ОС, рабочий каталог для установки Vector и каталог для данных Vector:   
+```yaml
+vector_version: "0.21.1"
+vector_os_arh: "x86_64"
+vector_workdir: "/tmp/vector"
+vector_data_dir: "/var/lib/vector"
+```
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+Пример добавление роли в playbook:  
+```yaml
+- name: Install Vector
+  hosts: vector
+  gather_facts: false
+  roles:
+    - role: vector-role
+      tags: vector
+```      
 
 License
 -------
 
 BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
